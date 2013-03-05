@@ -17,9 +17,6 @@ import MR
 import sgd
 import NB
 
-from sumatra.parameters import build_parameters
-from sumatra.decorators import capture
-
 # argparser = argparse.ArgumentParser()
 # argparser.add_argument(
 #     '-c', '--config', dest='config', help='Configuration file for experiment')
@@ -27,7 +24,6 @@ from sumatra.decorators import capture
 #     '-s', '--system', dest='system', help='System to use (llda, MR, SVM).')
 # args = argparser.parse_args()
 
-@capture
 def main(parameters):
     config = SafeConfigParser()
     config.read(parameters)
@@ -115,8 +111,5 @@ def main(parameters):
     print 'AVERAGE IS ERROR:', sum(globalIsError) / len(globalIsError)
     print 'AVERAGE MARGIN:', sum(globalMargin) / len(globalMargin)
 
-
-parameter_file = sys.argv[1]
-parameters = build_parameters(parameter_file)
-main(parameter_file)
+main(sys.argv[1])
 
