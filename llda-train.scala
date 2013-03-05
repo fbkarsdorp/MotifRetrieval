@@ -18,9 +18,9 @@ import edu.stanford.nlp.tmt.model.llda._;
 import edu.stanford.nlp.tmt.learn._;
 import edu.stanford.nlp.tmt.model._;
 
-
-if (args.length != 1) {
-  System.err.println("Arguments: input.csv");
+println(args.length)
+if (args.length != 4) {
+  System.err.println("Arguments: input.csv alpha beta iterations");
   System.exit(-1);
 }
 
@@ -66,13 +66,13 @@ val labels = {
 val dataset = LabeledLDADataset(text, labels);
 
 // define the model parameters
-val modelParams = LabeledLDAModelParams(dataset, 1000.0, 0.01);
+val modelParams = LabeledLDAModelParams(dataset, args(1).toDouble, args(2).toDouble);
 
 // Name of the output model folder to generate
 val modelPath = file("llda-vvb-"+dataset.signature+"-"+modelParams.signature);
 
 // Trains the model, writing to the given output path
-TrainCVB0LabeledLDA(modelParams, dataset, output = modelPath, maxIterations = 100);
+TrainCVB0LabeledLDA(modelParams, dataset, output = modelPath, maxIterations = args(3).toInt);
 //TrainGibbsLabeledLDA(modelParams, dataset, output = modelPath, maxIterations = 1500);
 
 val f = new PrintWriter(new File(args(0) + ".config"));

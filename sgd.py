@@ -10,44 +10,7 @@ from sklearn.metrics import average_precision_score
 from metrics import average_precision, one_error, is_error, margin
 
 
-class Index(object):
-    def __init__(self, terms=[]):
-        self._tokens = []
-        self._types = {}
-        self.update(terms)
 
-    def add(self, term):
-        if term not in self._types:
-            self._tokens.append(term)
-            self._types[term] = len(self._types)
-        return self._types[term]
-
-    def update(self, terms):
-        for term in terms:
-            self.add(term)
-
-    def __len__(self):
-        return len(self._types)
-
-    def __contains__(self, term):
-        return term in self._types
-
-    def __getitem__(self, term):
-        return self._types[term]
-
-    def __repr__(self):
-        return str(self._types)
-
-def load_data(data, class_index):
-    for (source, motifs, text) in data:
-        assert isinstance(text, list)
-        motif_ids = []
-        for motif in motifs.split(','):
-            if motif == 'DUMMY': continue
-            if motif not in class_index:
-                class_index.add(motif)
-            motif_ids.append(class_index[motif])
-        yield source, text, tuple(motif_ids)
 
 def run(training, validation, k, config=None):
     isError, OneError, nDocs = 0, 0, 0

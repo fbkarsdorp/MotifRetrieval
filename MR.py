@@ -2,10 +2,7 @@
 from collections import defaultdict
 
 from BM25 import Indexer
-from NB import Index
-import numpy as np
 from metrics import average_precision, one_error, is_error, margin
-from sklearn.metrics import precision_recall_curve, average_precision_score
 
 
 def run(training, validation, k, config):
@@ -29,7 +26,7 @@ def run(training, validation, k, config):
     for j, (source, motifs, text) in enumerate(validation):
         nDocs += 1
         scores = list(indexer.predict_proba(
-            text, config.getfloat('retrieval', 'k1'), config.getfloat('retrieval', 'b')))
+            text, config.getfloat('bm25', 'k1'), config.getfloat('bm25', 'b')))
         preds = sorted(scores, key=lambda i: i[1], reverse=True)
         preds = [label for label,score in preds]
         refs = set(motifs)

@@ -14,8 +14,7 @@ from metrics import average_precision, one_error, is_error, margin
 
 import llda
 import MR
-import sgd
-import NB
+import classifier
 
 # argparser = argparse.ArgumentParser()
 # argparser.add_argument(
@@ -28,11 +27,11 @@ def main(parameters):
     config = SafeConfigParser()
     config.read(parameters)
 
-    ROOTDIR = config.get('preprocessing', 'root')
+    ROOTDIR = config.get('filepaths', 'corpus')
 
     if len(os.listdir(ROOTDIR)) < 2:
         documents = []
-        with codecs.open(config.get('preprocessing', 'basefile'), encoding='utf-8') as f:
+        with codecs.open(config.get('filepaths', 'basefile'), encoding='utf-8') as f:
             for (source, labels, text) in unicode_csv_reader(f):
                 labels = clean_labels(labels)
                 documents.append((source, labels, text))
@@ -77,15 +76,22 @@ def main(parameters):
     globalOneError = []
     globalIsError = []
 
+    system = config.get('system', 'system')
+    if system == 'llda':
+        system = llda
+    elif system == 'SGD':
+        system = classifier
+    elif system == 'BM25':
+        system = MR
+    elif system == 'NB':
+        system = classifier
+    else:
+        raise ValueError("Unsupported system choice: %s" % system)
+
     for k, (fold, (training_docs, test_docs)) in enumerate(documents.iteritems()):
         assert 'training' in training_docs and 'validation' in test_docs
         training = list(cleanfile(ROOTDIR + training_docs, training_preprocessor, label_df=1))
         validation = list(cleanfile(ROOTDIR + test_docs, validation_preprocessor, label_df=1))
-        system = config.get('system', 'system')
-        system = (llda if system == 'llda' else 
-                  sgd  if system == 'SVM'  else 
-                  MR   if system == 'MR'   else
-                  NB)
         isError, oneError, nDocs, margins, AP = system.run(training, validation, k, config)
         isError = isError / float(nDocs)
         oneError = oneError / float(nDocs)
@@ -105,7 +111,8 @@ def main(parameters):
         print 'One Error:', oneError
         print 'Margin:', margins
         print '-' * 80
-    with open(config.get('preprocessing', 'output'), 'w') as out:
+    # TODO add git version number to results file
+    with open(config.get('filepaths', 'output'), 'w') as out:
         out.write('Average Precision: %f\n' % (sum(globalAP) / len(globalAP)))
         out.write('Average One Error: %f\n' % (sum(globalOneError) / len(globalOneError)))
         out.write('Average Is Error: %f\n' % (sum(globalIsError) / len(globalIsError)))
