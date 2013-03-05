@@ -59,8 +59,8 @@ def run(training, validation, k, config=None):
 
     n_iter = np.ceil(10**6 / len(traindocs))
 
-    # clf = SGDClassifier(alpha=.000001, loss='log', n_iter=50, penalty='elasticnet'),
-    clf = MultinomialNB(alpha=0.000001)
+    clf = SGDClassifier(alpha=.000001, loss='log', n_iter=50, penalty='elasticnet')
+    #clf = MultinomialNB(alpha=0.000001)
 
     classifier = Pipeline([
                 ('vectorizer', CountVectorizer(min_df=1, max_df=1.0, analyzer=lambda t: t)),
