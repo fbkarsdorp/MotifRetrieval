@@ -106,7 +106,7 @@ def main(parameters):
         print 'Margin:', margins
         print '-' * 80
     with open(config.get('preprocessing', 'otuput'), 'w') as out:
-        out.write('%s: %f' % (k, sum(globalAP) / len(globalAP))()
+        out.write('%s: %f' % (k, sum(globalAP) / len(globalAP)))
     print 'AVERAGE AP:', sum(globalAP) / len(globalAP)
     print 'AVERAGE ONE ERROR:', sum(globalOneError) / len(globalOneError)
     print 'AVERAGE IS ERROR:', sum(globalIsError) / len(globalIsError)
