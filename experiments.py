@@ -113,7 +113,7 @@ def main(parameters):
         print 'Margin:', margins
         print '-' * 80
     # TODO add git version number to results file
-    with open('results-' + Repo('.').heads[0].commit.hexsha, 'w') as out:
+    with open('Data/results-' + Repo('.').heads[0].commit.hexsha, 'w') as out:
         out.write('Average Precision: %f\n' % (sum(globalAP) / len(globalAP)))
         out.write('Average One Error: %f\n' % (sum(globalOneError) / len(globalOneError)))
         out.write('Average Is Error: %f\n' % (sum(globalIsError) / len(globalIsError)))
