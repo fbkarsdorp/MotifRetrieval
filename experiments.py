@@ -7,6 +7,7 @@ import sys
 
 from collections import defaultdict
 from ConfigParser import SafeConfigParser
+from git import Repo
 
 from preprocessing import cleanfile, clean_labels, preprocess, unicode_csv_reader
 from crossvalidation import filter_motifs, k_fold_cross_validation
@@ -112,7 +113,7 @@ def main(parameters):
         print 'Margin:', margins
         print '-' * 80
     # TODO add git version number to results file
-    with open(config.get('filepaths', 'output'), 'w') as out:
+    with open('results-' + Repo('.').heads[0].commit.hexsha, 'w') as out:
         out.write('Average Precision: %f\n' % (sum(globalAP) / len(globalAP)))
         out.write('Average One Error: %f\n' % (sum(globalOneError) / len(globalOneError)))
         out.write('Average Is Error: %f\n' % (sum(globalIsError) / len(globalIsError)))
