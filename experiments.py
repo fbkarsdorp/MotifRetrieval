@@ -7,7 +7,6 @@ import sys
 
 from collections import defaultdict
 from ConfigParser import SafeConfigParser
-from git import Repo
 
 from preprocessing import cleanfile, clean_labels, preprocess, unicode_csv_reader
 from crossvalidation import filter_motifs, k_fold_cross_validation
