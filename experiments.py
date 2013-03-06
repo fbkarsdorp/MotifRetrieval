@@ -113,7 +113,7 @@ def main(parameters):
         print 'Margin:', margins
         print '-' * 80
     output_dir = os.path.join('Data', sys.argv[-1])
-    with open(os.path.join(output_dir, 'output.txt') 'w') as out:
+    with open(os.path.join(output_dir, 'output.txt'), 'w') as out:
         out.write('Average Precision: %f\n' % (sum(globalAP) / len(globalAP)))
         out.write('Average One Error: %f\n' % (sum(globalOneError) / len(globalOneError)))
         out.write('Average Is Error: %f\n' % (sum(globalIsError) / len(globalIsError)))
