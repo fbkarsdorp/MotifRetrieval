@@ -17,14 +17,14 @@ def run(training, validation, k, config):
     with open(ROOTDIR + 'training-%s.tmp' % k, 'w') as training_out:
         writer = csv.writer(training_out, quoting=csv.QUOTE_MINIMAL)
         for (source, motifs, text) in training:
-            motifs = r' '.join(motif for motif in motifs.split(',') if motif != 'DUMMY')
+            motifs = r' '.join(motif for motif in motifs if motif != 'DUMMY')
             writer.writerow([source, motifs, ' '.join(text)])
 
     with open(ROOTDIR + 'testing-%s.tmp' % k, 'w') as testing_out:
         writer = csv.writer(testing_out, quoting=csv.QUOTE_MINIMAL)
         for (source, motifs, text) in validation:
-            ground_truth[source] = set(motifs.split(','))
-            writer.writerow([source, r' '.join(motifs.split(',')), ' '.join(text)])
+            ground_truth[source] = motifs
+            writer.writerow([source, r' '.join(motif), ' '.join(text)])
     
     # train LLDA
     with open(os.devnull, 'w') as null:

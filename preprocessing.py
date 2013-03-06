@@ -55,10 +55,10 @@ def cleanfile(filename, processor, label_df=False, tmi=None, encoding='utf-8'):
                 unarylabels = filter_unary_parent_labels(observedlabels, labels, tmi)
                 #print unarylabels
                 labels = [set(l)-unarylabels for l in labels]
-            labels = [','.join(sorted(l)) for l in labels]
+            #labels = [','.join(sorted(l)) for l in labels]
             for source,label,text in zip(sources, labels, processor(texts)):
                 if label:
-                    yield (source, label + ',DUMMY', text)
+                    yield (source, label, text)
         else:
             for (source, text) in reader:
                 sources.append(source)
