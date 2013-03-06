@@ -10,8 +10,6 @@ from sklearn.metrics import average_precision_score
 from metrics import average_precision, one_error, is_error, margin
 
 
-
-
 def run(training, validation, k, config=None):
     isError, OneError, nDocs = 0, 0, 0
     margins, AP = [], []
