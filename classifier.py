@@ -74,21 +74,17 @@ def run(training, validation, k, config):
     bigdoc = config.getboolean('NB', 'bigdoc')
     clf = config.get('system', 'system')
     if clf == 'NB':
-        alpha=config.getfloat('NB', 'alpha')
-        if bigdoc:
-            clf = MultinomialNB(alpha=alpha)
-        else:
-            clf = OneVsRestClassifier(MultinomialNB(alpha=alpha), n_jobs=-1)
+        clf = MultinomialNB(alpha=config.getfloat('NB', 'alpha'))
+        if not bigdoc:
+            clf = OneVsRestClassifier(clf, n_jobs=-1)
     elif clf == 'KNN':
-        if bigdoc:
-            clf = KNeighborsClassifier(n_neighbors=10)
-        else:
-            clf = OneVsRestClassifier(KNeighborsClassifier(n_neighbors=10))
+        clf = KNeighborsClassifier(n_neighbors=10, weights='distance')
+        if not bigdoc:
+            clf = OneVsRestClassifier(clf)
     elif clf == 'SVC':
-        if bigdoc:
-            clf = LinearSVC(loss='l2', penalty=penalty, dual=False, tol=1e-3)
-        else:
-            clf = OneVsRestClassifier(LinearSVC(loss='l2', penalty=penalty, dual=False, tol=1e-3))
+        clf = LinearSVC(loss='l2', penalty="l2", dual=False, tol=1e-3)
+        if not bigdoc:
+            clf = OneVsRestClassifier(clf)
     else:
         clf = OneVsRestClassifier(
             SGDClassifier(alpha=config.getfloat('sgd', 'alpha'),
