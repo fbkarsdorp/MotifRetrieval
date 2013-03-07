@@ -79,12 +79,10 @@ def main(parameters):
     system = config.get('system', 'system')
     if system == 'llda':
         system = llda
-    elif system == 'SGD':
+    elif system.upper() in ('SGD', 'SVC', 'KNN', 'NB'):
         system = classifier
     elif system == 'BM25':
         system = MR
-    elif system == 'NB':
-        system = classifier
     else:
         raise ValueError("Unsupported system choice: %s" % system)
 
