@@ -54,19 +54,31 @@ class Indexer(object):
                 (self.N - self.df(term) + 0.5) / (self.df(term) + 0.5))
             return idf
 
-    def BM25(self, query, document, k1=1.2, b=0.75, filter=True):
-        "Compute the Okkapi BM25 score for one document, given a query."
-        score = 0.0
+    def scores(self, query, document, k1=1.2, b=0.75, filter=True):
         for term in query:
             try: # check whether we computed this already
-                score += self.scores_[term, document]
+                s = self.scores_[term, document]
             except KeyError:
                 idf = self.idf(term)
                 tf = self.tf(term, document)
                 l = self.document_lengths[document]
                 s = idf * (tf * (k1 + 1)) / (tf + k1 * (1 - b + b * l / self.avg_len))
-                self.scores_[term, document] = s = 0.0 if filter and s < 0.0 else s
-                score += s
+                self.scores_[term, document] = s
+            yield 0.0 if filter and s < 0.0 else s
+
+    def BM25(self, query, document, k1=1.2, b=0.75, filter=True):
+        "Compute the Okkapi BM25 score for one document, given a query."
+        score = 0.0
+        for term in query:
+            try: # check whether we computed this already
+                s = self.scores_[term, document]
+            except KeyError:
+                idf = self.idf(term)
+                tf = self.tf(term, document)
+                l = self.document_lengths[document]
+                s = idf * (tf * (k1 + 1)) / (tf + k1 * (1 - b + b * l / self.avg_len))
+                self.scores_[term, document] = s 
+            score += 0.0 if filter and s < 0.0 else s
         return score
 
     def predict_proba(self, query, k1=1.2, b=0.75, filter=True):
