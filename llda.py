@@ -24,7 +24,7 @@ def run(training, validation, k, config):
         writer = csv.writer(testing_out, quoting=csv.QUOTE_MINIMAL)
         for (source, motifs, text) in validation:
             ground_truth[source] = motifs
-            writer.writerow([source, r' '.join(motif), ' '.join(text)])
+            writer.writerow([source, r' '.join(motifs), ' '.join(text)])
     
     # train LLDA
     with open(os.devnull, 'w') as null:

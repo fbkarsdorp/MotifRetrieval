@@ -10,6 +10,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import LinearSVC
 from sklearn.naive_bayes import BernoulliNB, MultinomialNB
 from sklearn.metrics import average_precision_score
+from sklearn.tree import DecisionTreeClassifier
 
 from metrics import average_precision, one_error, is_error, margin
 
@@ -43,7 +44,7 @@ class Index(object):
 
 def load_data(data, class_index):
     for (source, motifs, text) in data:
-        assert isinstance(text, list)
+#        assert isinstance(text, list)
         motif_ids = []
         for motif in motifs:
             if motif == 'DUMMY': continue
@@ -85,6 +86,8 @@ def run(training, validation, k, config):
         clf = LinearSVC(loss='l2', penalty="l2", dual=False, tol=1e-3)
         if not bigdoc:
             clf = OneVsRestClassifier(clf)
+    elif clf == 'dtree':
+        clf = DecisionTreeClassifier()
     else:
         clf = OneVsRestClassifier(
             SGDClassifier(alpha=config.getfloat('sgd', 'alpha'),
@@ -93,7 +96,7 @@ def run(training, validation, k, config):
                           penalty=config.get('sgd', 'penalty')), n_jobs=-1)
 
     classifier = Pipeline([
-        ('vectorizer', CountVectorizer(min_df=1, max_df=1.0, analyzer=lambda t: t)),
+        ('vectorizer', CountVectorizer(min_df=1, max_df=1, analyzer=lambda t: t)),
         ('tfidf', TfidfTransformer(norm=norm, smooth_idf=smooth_idf)),
         ('clf', clf)])
 

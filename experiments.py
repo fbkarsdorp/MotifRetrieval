@@ -15,6 +15,7 @@ from metrics import average_precision, one_error, is_error, margin
 import llda
 import MR
 import classifier
+import lldaTfidf
 
 # argparser = argparse.ArgumentParser()
 # argparser.add_argument(
@@ -55,7 +56,8 @@ def main(parameters):
         lowercase = config.getboolean('preprocessing', 'lowercase'),
         max_df = config.getfloat('preprocessing', 'maximum-document-frequency'),
         min_df = config.getint('preprocessing', 'minimum-document-frequency'),
-        min_word_len = config.getint('preprocessing', 'minimum-word-length'))
+        min_word_len = config.getint('preprocessing', 'minimum-word-length'),
+        join=False)
 
     validation_preprocessor = lambda t: preprocess(
         t, encoding=config.get('preprocessing', 'encoding'),
@@ -64,7 +66,8 @@ def main(parameters):
         lowercase = config.getboolean('preprocessing', 'lowercase'),
         max_df = 1.0,
         min_df = 1.0,
-        min_word_len = config.getint('preprocessing', 'minimum-word-length'))
+        min_word_len = config.getint('preprocessing', 'minimum-word-length'),
+        join=False)
 
     documents = defaultdict(list)
     for document in os.listdir(ROOTDIR):
@@ -83,6 +86,8 @@ def main(parameters):
         system = classifier
     elif system == 'BM25':
         system = MR
+    elif system == 'lldaTfidf':
+        system = lldaTfidf
     else:
         raise ValueError("Unsupported system choice: %s" % system)
 
@@ -109,17 +114,18 @@ def main(parameters):
         print 'One Error:', oneError
         print 'Margin:', margins
         print '-' * 80
+
+    print 'AVERAGE AP:', sum(globalAP) / len(globalAP)
+    print 'AVERAGE ONE ERROR:', sum(globalOneError) / len(globalOneError)
+    print 'AVERAGE IS ERROR:', sum(globalIsError) / len(globalIsError)
+    print 'AVERAGE MARGIN:', sum(globalMargin) / len(globalMargin)
+
     output_dir = os.path.join('Data', sys.argv[-1])
     with open(os.path.join(output_dir, 'output.txt'), 'w') as out:
         out.write('Average Precision: %f\n' % (sum(globalAP) / len(globalAP)))
         out.write('Average One Error: %f\n' % (sum(globalOneError) / len(globalOneError)))
         out.write('Average Is Error: %f\n' % (sum(globalIsError) / len(globalIsError)))
         out.write('Average Margin: %f\n' % (sum(globalMargin) / len(globalMargin)))
-
-    print 'AVERAGE AP:', sum(globalAP) / len(globalAP)
-    print 'AVERAGE ONE ERROR:', sum(globalOneError) / len(globalOneError)
-    print 'AVERAGE IS ERROR:', sum(globalIsError) / len(globalIsError)
-    print 'AVERAGE MARGIN:', sum(globalMargin) / len(globalMargin)
 
 main(sys.argv[1])
 
