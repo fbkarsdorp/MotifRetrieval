@@ -190,7 +190,8 @@ def main(args):
                               label_df=args.label_df, tmi=tmi,
                               encoding=args.encoding):
         try:
-            outfile.write(writeformat % document)
+            (source, labels, text) = document
+            outfile.write(writeformat % (source, ' '.join(labels), text))
         except UnicodeEncodeError:
             print "Unicode error in %r" % document[-1]
             raise UnicodeEncodeError

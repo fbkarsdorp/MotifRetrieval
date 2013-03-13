@@ -79,3 +79,7 @@ val f = new PrintWriter(new File(args(0) + ".config"));
 f.print(modelPath)
 f.close()
 
+// val model = LoadCVB0LabeledLDA(modelPath);
+// val topTerms = QueryTopTerms(model, model.numTerms);
+// CSVFile(modelPath+"/top-terms.csv").write(topTerms);
+
