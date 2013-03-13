@@ -77,7 +77,7 @@ class Indexer(object):
                 l = self.document_lengths[document]
                 s = idf * (tf * (k1 + 1)) / (tf + k1 * (1 - b + b * l / self.avg_len))
                 self.scores_[term, document] = s 
-            score += 0.0 if filter and s < 1.0 else s
+            score += 0.0 if filter and s <= 0.0 else s
         return score
 
     def predict_proba(self, query, k1=1.2, b=0.75, filter=True):
